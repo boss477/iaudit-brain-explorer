@@ -63,3 +63,53 @@ main{margin-left:240px;padding:0 32px;max-width:1900px}.app-header{height:76px;d
 
 @media(min-width:1101px){.viewer-panel{align-self:start;position:sticky;top:20px}.viewer-panel .model-pane{min-height:405px}.viewer-panel model-viewer{height:330px;flex:none}}
 
+
+/* A focused comparison workspace with a quiet case overview and explicit chart modes. */
+.prediction-panel .panel-heading{padding:24px 26px 0}
+.prediction-panel .panel-heading h2{font-size:22px;letter-spacing:-.04em}
+.prediction-panel .plot-description{padding:10px 26px 0;font-size:13px}
+#prediction-chart{padding:22px 26px 26px}
+.chart-overview{display:grid;grid-template-columns:.85fr 1.15fr;background:#17191c;color:#fff;border-radius:8px;padding:22px 24px;gap:24px;margin-bottom:20px}
+.chart-overview>div+div{border-left:1px solid #45474a;padding-left:24px}
+.chart-overview span{display:block;color:#c4c7cc;font-size:12px;margin-bottom:9px}
+.chart-overview strong{font-size:34px;line-height:1.15;font-weight:500;letter-spacing:-.045em;display:block}
+.chart-overview strong small{font-size:12px;font-weight:400;color:#c4c7cc;letter-spacing:0;margin-left:7px}
+.chart-overview p{font-size:11px;color:#c4c7cc;margin-top:10px;line-height:1.55}
+.chart-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.chart-tools .segments button{font-size:12px;padding:6px 12px;min-height:34px}
+.chart-tools label{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:11px}
+.chart-tools select{font:inherit;color:var(--text);border:1px solid #c9ced4;border-radius:6px;background:#fff;min-height:36px;padding:6px 8px;cursor:pointer}
+.chart-key{margin-bottom:16px;font-size:12px;gap:20px}
+.chart-column-labels{padding:0 10px 10px;font-size:11px}
+.prediction-row,.chart-axis,.chart-column-labels{grid-template-columns:minmax(135px,1.1fr) minmax(85px,1fr) 76px;gap:18px}
+.prediction-row{min-height:70px;padding:10px;border:0;border-radius:6px;margin:3px 0}
+.prediction-row:hover{background:#f5f7fa}
+.prediction-row.closest-row{background:#f0f5fd}
+.model-name{font-size:13px;font-weight:500}
+.closest-label{font-size:11px;font-weight:400;margin-top:5px}
+.prediction-value{font-size:24px;font-weight:500}
+.prediction-value small{display:inline-block;background:#f0f2f5;color:#505965;padding:3px 6px;border-radius:4px;font-size:11px;white-space:nowrap;margin-top:6px}
+.closest-row .prediction-value small{background:#dce9fc;color:#174f9f}
+.chart-group{margin-top:16px}
+.chart-group h3{font-size:12px;font-weight:500;padding:11px 10px;margin:0;color:#5d646d}
+.prediction-track{height:30px}
+.track-line{background:#e0e5eb}
+.truth-mark{top:2px;bottom:2px}
+.prediction-dot{width:11px;height:11px}
+.error-span{height:5px;top:calc(50% - 2.5px);background:#b7d0f4;border-radius:2px}
+.internal-range{top:13px}
+.internal-tick{top:8px;height:14px}
+.chart-axis{padding:0 10px;margin-top:15px}
+.chart-footnote{font-size:11px;margin-top:18px;max-width:80ch}
+.model-internals{font-size:12px;background:#f6f7f9;padding:12px 14px;border-radius:6px;margin-top:16px}
+.model-internals summary{min-height:18px}
+.chart-expanded .prediction-row,.chart-expanded .chart-axis,.chart-expanded .chart-column-labels{grid-template-columns:minmax(200px,.8fr) minmax(250px,1.7fr) 95px;gap:26px}
+.chart-expanded .prediction-row{min-height:72px}
+.chart-expanded .model-name{font-size:15px}
+.chart-expanded .prediction-value{font-size:26px}
+.chart-expanded .chart-overview{grid-template-columns:.85fr 1.15fr;padding:24px 28px}
+@media(max-width:1100px){.prediction-row,.chart-axis,.chart-column-labels,.chart-expanded .prediction-row,.chart-expanded .chart-axis,.chart-expanded .chart-column-labels{grid-template-columns:minmax(160px,1.1fr) minmax(140px,1.4fr) 80px;gap:18px}}
+@media(max-width:700px){.prediction-panel .panel-heading{padding:18px 16px 0}.prediction-panel .panel-heading h2{font-size:20px}.prediction-panel .plot-description{padding:10px 16px 0}#prediction-chart{padding:18px 12px}.chart-overview,.chart-expanded .chart-overview{padding:18px 16px;gap:16px;grid-template-columns:.75fr 1.25fr}.chart-overview>div+div{padding-left:16px}.chart-overview strong{font-size:30px}.chart-overview p{font-size:11px}.chart-tools{gap:12px}.chart-tools .segments button{padding:5px 9px}.chart-tools label{margin-left:auto}.prediction-row,.chart-axis,.chart-column-labels,.chart-expanded .prediction-row,.chart-expanded .chart-axis,.chart-expanded .chart-column-labels{grid-template-columns:minmax(100px,1.1fr) minmax(46px,1fr) 60px;gap:8px}.prediction-row,.chart-expanded .prediction-row{min-height:78px;padding:9px 6px}.chart-column-labels{padding-left:6px;padding-right:6px}.model-name,.chart-expanded .model-name{font-size:12px}.prediction-value,.chart-expanded .prediction-value{font-size:22px}.chart-key{font-size:11px;gap:14px}.chart-axis{padding:0 6px}.chart-group h3{padding-left:6px}.chart-overview strong small{margin-left:4px;font-size:11px}}
+
+.prediction-value small{display:block;width:max-content;margin-left:auto}
+

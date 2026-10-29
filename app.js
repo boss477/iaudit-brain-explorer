@@ -6,7 +6,7 @@ const signed = n => `${n >= 0 ? '+' : '−'}${f(Math.abs(n))}`;
 const escapeHTML = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const sex = c => c.sex === 'F' ? 'Female' : 'Male';
 let data;
-let state = {id:'SALD_031740',filter:'all',query:'',mode:'3d',view:'axial',slice:3,quiz:false,revealed:new Set(),guesses:new Map(),route:'explorer'};
+let state = {id:'SALD_031740',filter:'all',query:'',mode:'3d',view:'axial',slice:3,quiz:false,revealed:new Set(),guesses:new Map(),route:'explorer',chartMetric:'age',chartSort:'family'};
 const current = () => data.cases.find(c=>c.id===state.id);
 const hiddenAge = c => state.quiz && !state.revealed.has(c.id);
 const visibleCases = () => data.cases.filter(c=>{
@@ -59,12 +59,16 @@ function renderChart(){
   const values=[c.age,...Object.values(c.preds).flat()];
   let lo=Math.floor((Math.min(...values)-3)/5)*5,hi=Math.ceil((Math.max(...values)+3)/5)*5;
   if(hi-lo<20){lo=Math.floor(((hi+lo)/2-10)/5)*5;hi=lo+20;}
-  const pct=v=>(v-lo)/(hi-lo)*100;
+  const errorMode=state.chartMetric==='error';
+  if(errorMode){const limit=Math.max(5,Math.ceil(Math.max(...values.map(v=>Math.abs(v-c.age)))/5)*5);lo=-limit;hi=limit;}
+  const axisPct=v=>(v-lo)/(hi-lo)*100;
+  const pct=v=>axisPct(errorMode?v-c.age:v);
   const closest=names.reduce((best,name)=>Math.abs(c.preds[name]-c.age)<Math.abs(c.preds[best]-c.age)?name:best,names[0]);
   let html='';
   if(state.guesses.has(c.id)){const g=state.guesses.get(c.id);html+=`<p class="guess-result">Your estimate: ${f(g)} y · Error: ${signed(g-c.age)} y</p>`;}
-  html+=`<div class="chart-key"><span><i class="truth-key"></i>True age <strong>${f(c.age)} years</strong></span><span><i class="prediction-key"></i>Model prediction</span></div><div class="chart-column-labels"><span>Model</span><span>Age in years</span><span>Prediction / error</span></div>`;
-  for(const [label,members] of groups){
+  html+=`<div class="chart-overview"><div><span>True age</span><strong>${f(c.age)}<small>years</small></strong><p>${c.id} · ${sex(c)}</p></div><div><span>Closest prediction</span><strong>${f(c.preds[closest])}<small>years</small></strong><p>${escapeHTML(closest)} · ${f(Math.abs(c.preds[closest]-c.age))} y absolute error</p></div></div><div class="chart-tools"><div class="segments metric-switch" role="group" aria-label="Chart measure"><button data-metric="age" aria-pressed="${!errorMode}">Predicted age</button><button data-metric="error" aria-pressed="${errorMode}">Prediction error</button></div><label>Order <select id="chart-sort"><option value="family" ${state.chartSort==='family'?'selected':''}>Model family</option><option value="error" ${state.chartSort==='error'?'selected':''}>Closest first</option></select></label></div><div class="chart-key"><span><i class="truth-key"></i>${errorMode?'Zero error':'True age'}</span><span><i class="prediction-key"></i>Prediction</span>${errorMode?'<span>Younger ← · → Older</span>':''}</div><div class="chart-column-labels"><span>Model</span><span>${errorMode?'Difference from true age':'Age in years'}</span><span>Prediction / error</span></div>`;
+  const orderedGroups=state.chartSort==='error'?[['Ranked by absolute error',[...names].sort((a,b)=>Math.abs(c.preds[a]-c.age)-Math.abs(c.preds[b]-c.age))]]:groups;
+  for(const [label,members] of orderedGroups){
     const rows=members.filter(n=>typeof c.preds[n]==='number');
     if(!rows.length)continue;
     html+=`<div class="chart-group"><h3>${label}</h3>`;
@@ -79,11 +83,13 @@ function renderChart(){
     }
     html+='</div>';
   }
-  const step=hi-lo<=35?5:10;
-  const ticks=[];for(let t=Math.ceil(lo/step)*step;t<=hi;t+=step)ticks.push(`<span style="left:${pct(t)}%">${t}</span>`);
-  html+=`<div class="chart-axis" aria-label="Age scale from ${lo} to ${hi} years"><div></div><div>${ticks.join('')}</div><div></div></div><p class="chart-footnote">Age in years. Error = prediction − true age.</p><details class="model-internals"><summary>BrainAgeNeXt’s five internal predictions</summary><p>${c.preds['BrainAgeNeXt models'].map(v=>`${f(v,2)} y`).join(' · ')}. Grey ticks show these outputs.</p></details>`;
+  const step=hi-lo<=10?2:hi-lo<=35?5:10;
+  const ticks=[];for(let t=Math.ceil(lo/step)*step;t<=hi;t+=step)ticks.push(`<span style="left:${axisPct(t)}%">${errorMode&&t>0?'+':''}${t}</span>`);
+  html+=`<div class="chart-axis" aria-label="${errorMode?'Error':'Age'} scale from ${lo} to ${hi} years"><div></div><div>${ticks.join('')}</div><div></div></div><p class="chart-footnote">${errorMode?'Left of zero = younger. Right of zero = older.':'Blue marks show the predictions; black marks show the true age.'} Error = prediction − true age.</p><details class="model-internals"><summary>Inside BrainAgeNeXt: five model outputs</summary><p>${c.preds['BrainAgeNeXt models'].map(v=>`${f(v,2)} y`).join(' · ')}. Grey ticks show these outputs.</p></details>`;
   if(c.cohort==='SALD')html+='<p class="chart-footnote">Tabular models are unavailable for SALD; tissue-volume features were only extracted for IXI.</p>';
   $('prediction-chart').innerHTML=html;
+  $('prediction-chart').querySelectorAll('[data-metric]').forEach(b=>b.addEventListener('click',()=>{state.chartMetric=b.dataset.metric;renderChart();}));
+  $('chart-sort').addEventListener('change',e=>{state.chartSort=e.target.value;renderChart();});
 }
 
 function renderCase(){
