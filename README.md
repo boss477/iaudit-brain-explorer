@@ -38,3 +38,9 @@ Taste Skill v2's Achromatic ledger direction (seed 1812289573): neutral chrome, 
 - Taste Skill: https://www.tasteskill.dev/ and https://github.com/Leonxlnx/taste-skill (MIT).
 - model-viewer 4.4.0: https://modelviewer.dev/ (Apache-2.0; see vendor/model-viewer-LICENSE.txt).
 - Geist font via @fontsource/geist 5.3.0 (SIL OFL; see vendor/geist-LICENSE.txt).
+
+## Interface updates
+
+The workspace now opens in a neutral dark theme, with a light-theme toggle that remembers the visitor's choice in browser-local storage. Both themes keep the same source values, chart scales and keyboard controls.
+
+Each model row is a keyboard-accessible disclosure. Selecting it opens the full recorded prediction, true age, signed error and model-family context directly below that row. The age/error toggle, closest-first sorting, full-width expansion and age-guessing mode remain available. The 3D brain uses the active theme's background.

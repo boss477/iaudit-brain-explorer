@@ -113,3 +113,58 @@ main{margin-left:240px;padding:0 32px;max-width:1900px}.app-header{height:76px;d
 
 .prediction-value small{display:block;width:max-content;margin-left:auto}
 
+
+/* Keyboard-accessible result inspection. */
+button.prediction-row{width:100%;text-align:left;background:transparent;color:var(--text);font-family:inherit;cursor:pointer}
+button.prediction-row.closest-row{background:#f0f5fd}
+button.prediction-row:hover{background:#f0f3f7}
+button.prediction-row[aria-expanded=true]{outline:1px solid var(--blue);outline-offset:-1px}
+.inspect-hint{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:5px}
+.model-detail{background:#f6f8fb;border-radius:6px;padding:18px;margin:0 10px 12px}
+.model-detail dl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:0}
+.model-detail dt{font-size:11px;color:var(--muted);margin-bottom:7px}
+.model-detail dd{font-size:19px;margin:0;letter-spacing:-.03em}
+.model-detail dd small{font-size:11px;color:var(--muted);letter-spacing:0}
+.model-detail p{font-size:12px;color:var(--muted);margin-top:15px;max-width:75ch}
+
+/* Neutral dark theme: colour stays on predictions, surfaces separate by tone. */
+:root[data-theme=dark]{color-scheme:dark;--ground:#101113;--surface:#191b1e;--text:#f0f2f5;--muted:#a7adb7;--border:#2c2f34;--active:#292d33;--blue:#81b5ff}
+[data-theme=dark] .brand img{filter:invert(1)}
+[data-theme=dark] .sidebar{background:var(--ground)}
+[data-theme=dark] .segments{background:#24272c}
+[data-theme=dark] .segments button[aria-pressed=true]{background:#e7eaf0;color:#17191c}
+[data-theme=dark] .segments button:hover{color:#fff}
+[data-theme=dark] .segments button[aria-pressed=true]:hover{color:#17191c}
+[data-theme=dark] .button,[data-theme=dark] .chart-tools select,[data-theme=dark] input[type=search],[data-theme=dark] input[type=number],[data-theme=dark] .menu-toggle{background:#202328;color:var(--text);border-color:#454b55}
+[data-theme=dark] .button:hover,[data-theme=dark] .menu-toggle:hover{background:#30343b}
+[data-theme=dark] .button.primary{background:#e7eaf0;color:#15171a;border-color:#e7eaf0}
+[data-theme=dark] .case-row:hover{background:#202328}
+[data-theme=dark] .case-row[aria-pressed=true]{background:#e7eaf0;color:#17191c}
+[data-theme=dark] .case-row[aria-pressed=true] .case-demographics,[data-theme=dark] .case-row[aria-pressed=true] .case-why{color:#515965}
+[data-theme=dark] model-viewer{background:#191b1e;--poster-color:#191b1e}
+[data-theme=dark] .model-progress,[data-theme=dark] .model-error{background:#202328;color:var(--text)}
+[data-theme=dark] .model-toolbar .segments button[aria-pressed=true]{color:#17191c}
+[data-theme=dark] .viewer-note{background:#15171a}
+[data-theme=dark] .chart-overview{background:#111315}
+[data-theme=dark] .chart-overview>div+div{border-color:#383d45}
+[data-theme=dark] .chart-overview p,[data-theme=dark] .chart-overview span,[data-theme=dark] .chart-overview strong small{color:#b4bac4}
+[data-theme=dark] .chart-overview strong{color:#f5f7fa}
+[data-theme=dark] .chart-group h3{color:#b0b7c2}
+[data-theme=dark] .prediction-row.closest-row,[data-theme=dark] button.prediction-row.closest-row{background:#202c3d}
+[data-theme=dark] .prediction-row:hover,[data-theme=dark] button.prediction-row:hover{background:#252a32}
+[data-theme=dark] .prediction-value small{background:#2b3038;color:#c1c8d2}
+[data-theme=dark] .closest-row .prediction-value small{background:#2d4566;color:#c2dcff}
+[data-theme=dark] .truth-mark,[data-theme=dark] .truth-key{background:#ecf0f6}
+[data-theme=dark] .prediction-dot{outline-color:#191b1e}
+[data-theme=dark] .closest-row .prediction-dot{outline-color:#202c3d}
+[data-theme=dark] .track-line{background:#353b45}
+[data-theme=dark] .error-span{background:#4a709f}
+[data-theme=dark] .internal-range{background:#657080}
+[data-theme=dark] .internal-tick{background:#b4bcc9}
+[data-theme=dark] .model-internals,[data-theme=dark] .model-detail,[data-theme=dark] .guess-result{background:#22262c}
+[data-theme=dark] .cohort-finding,[data-theme=dark] .table-wrap,[data-theme=dark] .error-message{background:var(--surface)}
+[data-theme=dark] td{border-top-color:#2a2e34}
+[data-theme=dark] .mri-canvas{background:#08090a}
+[data-theme=dark] .quiz-toggle input,[data-theme=dark] input[type=range]{accent-color:#b3c4dd}
+[data-theme=dark] .snapshot:before{background:#a9b2c0}
+@media(max-width:700px){.header-actions{gap:6px}#theme-toggle{font-size:11px;padding:6px 8px}.model-detail{padding:14px 10px;margin-left:6px;margin-right:6px}.model-detail dl{gap:10px}.model-detail dd{font-size:17px}.model-detail dd small{display:block;margin-top:4px}.model-detail dt{line-height:1.5}.inspect-hint{font-size:11px}}

@@ -1,12 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Explore 26 recorded brain-age MRI cases, all 799 scan records, nine model variants, and a textured 3D brain reference in iAudit.">
-  <meta name="theme-color" content="#f2f4f7">
+  <meta name="theme-color" content="#101113">
   <title>iAudit — Brain age, in perspective</title>
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('iaudit-theme')||'dark'}catch{}</script>
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="vendor/model-viewer.min.js"></script>
   <script type="module" src="app.js"></script>
@@ -33,7 +34,7 @@
     </div>
   </aside>
   <main id="main" tabindex="-1">
-    <div class="app-header"><span id="breadcrumb">Research / Case explorer</span><div class="header-actions"><span class="snapshot">Recorded runs</span><button id="download-data" class="button small">Download data ↓</button></div></div>
+    <div class="app-header"><span id="breadcrumb">Research / Case explorer</span><div class="header-actions"><span class="snapshot">Recorded runs</span><button id="theme-toggle" class="button small" aria-label="Switch to light theme">Light theme</button><button id="download-data" class="button small">Download data ↓</button></div></div>
     <div id="load-error" class="error-message" hidden><h1>Case data could not load</h1><p>Please reload to try again.</p><button onclick="location.reload()" class="button">Reload</button></div>
     <section id="explorer-view" class="view" aria-labelledby="explorer-title">
       <header class="page-heading"><div><h1 id="explorer-title">Brain age, in perspective</h1><p>One MRI case. Every model’s answer.</p></div><label class="quiz-toggle"><input type="checkbox" id="quiz-toggle">Guess the age first</label></header>

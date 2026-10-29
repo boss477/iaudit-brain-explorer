@@ -6,6 +6,7 @@ const signed = n => `${n >= 0 ? '+' : '−'}${f(Math.abs(n))}`;
 const escapeHTML = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const sex = c => c.sex === 'F' ? 'Female' : 'Male';
 let data;
+let selectedModel=null;
 let state = {id:'SALD_031740',filter:'all',query:'',mode:'3d',view:'axial',slice:3,quiz:false,revealed:new Set(),guesses:new Map(),route:'explorer',chartMetric:'age',chartSort:'family'};
 const current = () => data.cases.find(c=>c.id===state.id);
 const hiddenAge = c => state.quiz && !state.revealed.has(c.id);
@@ -79,17 +80,20 @@ function renderChart(){
         const outputs=c.preds['BrainAgeNeXt models'];
         internal=`<i class="internal-range" style="--left:${pct(Math.min(...outputs))}%;--width:${pct(Math.max(...outputs))-pct(Math.min(...outputs))}%"></i>`+outputs.map(v=>`<i class="internal-tick" style="--left:${pct(v)}%"></i>`).join('');
       }
-      html+=`<div class="prediction-row${name===closest?' closest-row':''}" title="${escapeHTML(name)}: ${value} years; error ${error.toFixed(2)} years"><span class="model-name">${escapeHTML(name)}${name===closest?'<span class="closest-label">Closest to true age</span>':''}</span><div class="prediction-track" aria-hidden="true" style="--truth:${pct(c.age)}%;--value:${pct(value)}%"><i class="track-line"></i><i class="error-span" style="left:${pct(Math.min(c.age,value))}%;width:${Math.abs(pct(value)-pct(c.age))}%"></i>${internal}<i class="truth-mark"></i><i class="prediction-dot"></i></div><span class="prediction-value">${f(value)}<small>${signed(error)} y</small></span></div>`;
+      const detailId=`model-detail-${modelNames.indexOf(name)}`;
+      const modelNote=name.includes('ridge')?`Frozen CNN features with a ridge head trained on IXI Guys+HH. ${c.cohort==='IXI'?'This is an out-of-fold prediction.':'This is an external evaluation prediction.'}`:modelNames.slice(6).includes(name)?'Tabular regression on extracted tissue-volume features; IXI out-of-fold prediction.':'Published CNN, unchanged. This value is replayed from the recorded run.';
+      html+=`<button type="button" class="prediction-row${name===closest?' closest-row':''}" data-inspect-model="${escapeHTML(name)}" aria-expanded="${selectedModel===name}" aria-controls="${detailId}" title="Inspect ${escapeHTML(name)}"><span class="model-name">${escapeHTML(name)}${name===closest?'<span class="closest-label">Closest to true age</span>':''}<span class="inspect-hint">${selectedModel===name?'Close details −':'Inspect result +'}</span></span><span class="prediction-track" aria-hidden="true" style="--truth:${pct(c.age)}%;--value:${pct(value)}%"><i class="track-line"></i><i class="error-span" style="left:${pct(Math.min(c.age,value))}%;width:${Math.abs(pct(value)-pct(c.age))}%"></i>${internal}<i class="truth-mark"></i><i class="prediction-dot"></i></span><span class="prediction-value">${f(value)}<small>${signed(error)} y</small></span></button><div id="${detailId}" class="model-detail" ${selectedModel===name?'':'hidden'}><dl><div><dt>Recorded prediction</dt><dd>${f(value,2)} <small>years</small></dd></div><div><dt>True age</dt><dd>${f(c.age)} <small>years</small></dd></div><div><dt>Signed error</dt><dd>${error>=0?'+':'−'}${f(Math.abs(error),2)} <small>years</small></dd></div></dl><p>${modelNote}</p></div>`;
     }
     html+='</div>';
   }
   const step=hi-lo<=10?2:hi-lo<=35?5:10;
   const ticks=[];for(let t=Math.ceil(lo/step)*step;t<=hi;t+=step)ticks.push(`<span style="left:${axisPct(t)}%">${errorMode&&t>0?'+':''}${t}</span>`);
-  html+=`<div class="chart-axis" aria-label="${errorMode?'Error':'Age'} scale from ${lo} to ${hi} years"><div></div><div>${ticks.join('')}</div><div></div></div><p class="chart-footnote">${errorMode?'Left of zero = younger. Right of zero = older.':'Blue marks show the predictions; black marks show the true age.'} Error = prediction − true age.</p><details class="model-internals"><summary>Inside BrainAgeNeXt: five model outputs</summary><p>${c.preds['BrainAgeNeXt models'].map(v=>`${f(v,2)} y`).join(' · ')}. Grey ticks show these outputs.</p></details>`;
+  html+=`<div class="chart-axis" aria-label="${errorMode?'Error':'Age'} scale from ${lo} to ${hi} years"><div></div><div>${ticks.join('')}</div><div></div></div><p class="chart-footnote">${errorMode?'Left of zero = younger. Right of zero = older.':'Blue marks show predictions; reference marks show the true age.'} Error = prediction − true age.</p><details class="model-internals"><summary>Inside BrainAgeNeXt: five model outputs</summary><p>${c.preds['BrainAgeNeXt models'].map(v=>`${f(v,2)} y`).join(' · ')}. Grey ticks show these outputs.</p></details>`;
   if(c.cohort==='SALD')html+='<p class="chart-footnote">Tabular models are unavailable for SALD; tissue-volume features were only extracted for IXI.</p>';
   $('prediction-chart').innerHTML=html;
   $('prediction-chart').querySelectorAll('[data-metric]').forEach(b=>b.addEventListener('click',()=>{state.chartMetric=b.dataset.metric;renderChart();}));
   $('chart-sort').addEventListener('change',e=>{state.chartSort=e.target.value;renderChart();});
+  $('prediction-chart').querySelectorAll('[data-inspect-model]').forEach(b=>b.addEventListener('click',()=>{const name=b.dataset.inspectModel;selectedModel=selectedModel===name?null:name;renderChart();const focusRow=[...$('prediction-chart').querySelectorAll('[data-inspect-model]')].find(row=>row.dataset.inspectModel===name);focusRow?.focus({preventScroll:true});}));
 }
 
 function renderCase(){
@@ -153,6 +157,9 @@ function downloadCSV(){
 }
 
 const brain=$('brain-model');
+function syncTheme(){const dark=document.documentElement.dataset.theme==='dark';$('theme-toggle').textContent=dark?'Light theme':'Dark theme';$('theme-toggle').setAttribute('aria-label',`Switch to ${dark?'light':'dark'} theme`);document.querySelector('meta[name="theme-color"]').content=dark?'#101113':'#f2f4f7';}
+$('theme-toggle').addEventListener('click',()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem('iaudit-theme',document.documentElement.dataset.theme);}catch{}syncTheme();});
+syncTheme();
 const expandChart=document.createElement('button');
 expandChart.type='button';expandChart.className='button chart-expand';expandChart.textContent='Expand chart';expandChart.setAttribute('aria-expanded','false');expandChart.setAttribute('aria-controls','prediction-chart');
 $('prediction-title').parentElement.append(expandChart);
