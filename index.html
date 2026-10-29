@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore 26 recorded brain-age MRI cases, all 799 scan records, nine model variants, and a textured 3D brain reference in iAudit.">
+  <meta name="theme-color" content="#f2f4f7">
+  <title>iAudit — Brain age, in perspective</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="vendor/model-viewer.min.js"></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#case-SALD_031740" aria-label="iAudit case explorer"><img src="assets/mark.svg" width="31" height="31" alt=""><span>iAudit<span class="brand-caption">Brain-age model audit</span></span></a>
+    <button class="menu-toggle" id="menu-toggle" aria-controls="sidebar-content" aria-expanded="false">Menu</button>
+    <div id="sidebar-content" class="sidebar-content">
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a href="#case-SALD_031740" data-route="explorer">Case explorer <span aria-hidden="true">↗</span></a>
+        <a href="#cohorts" data-route="cohorts">Cohort results</a>
+        <a href="#data" data-route="data">All case data</a>
+      </nav>
+      <div class="case-browser">
+        <div class="list-heading"><h2>Study cases</h2><span id="case-count">26 cases</span></div>
+        <div class="segments" id="cohort-filters" role="group" aria-label="Filter cases by cohort"><button data-filter="all" aria-pressed="true">All</button><button data-filter="IXI" aria-pressed="false">IXI</button><button data-filter="eNKI" aria-pressed="false">eNKI</button><button data-filter="SALD" aria-pressed="false">SALD</button></div>
+        <label class="search-label" for="case-search">Find a case</label>
+        <input id="case-search" type="search" placeholder="Case ID, decade or sex" autocomplete="off">
+        <div id="case-list" class="case-list" aria-label="MRI cases"><p class="muted">Loading case data…</p></div>
+      </div>
+      <div class="sidebar-footer"><span>Recorded study data</span><a href="https://github.com/sudarsan2507-hue/iAudit" target="_blank" rel="noreferrer">iAudit research repository ↗</a><a href="https://github.com/boss477/iaudit-brain-explorer" target="_blank" rel="noreferrer">Website source ↗</a></div>
+    </div>
+  </aside>
+  <main id="main" tabindex="-1">
+    <div class="app-header"><span id="breadcrumb">Research / Case explorer</span><div class="header-actions"><span class="snapshot">Recorded runs</span><button id="download-data" class="button small">Download data ↓</button></div></div>
+    <div id="load-error" class="error-message" hidden><h1>Case data could not load</h1><p>Please reload to try again.</p><button onclick="location.reload()" class="button">Reload</button></div>
+    <section id="explorer-view" class="view" aria-labelledby="explorer-title">
+      <header class="page-heading"><div><h1 id="explorer-title">Brain age, in perspective</h1><p>One MRI case. Every model’s answer.</p></div><label class="quiz-toggle"><input type="checkbox" id="quiz-toggle">Guess the age first</label></header>
+      <div class="case-summary" aria-live="polite"><div><span class="muted">Selected case</span><h2 id="selected-id">SALD_031740</h2></div><dl><div><dt>Cohort / site</dt><dd id="selected-site">—</dd></div><div><dt>Sex</dt><dd id="selected-sex">—</dd></div><div><dt>True age</dt><dd id="selected-age" class="lead-number">—</dd></div></dl><div class="case-stepper"><button id="previous-case" class="button small" aria-label="Previous case">←</button><button id="next-case" class="button small" aria-label="Next case">→</button></div></div>
+      <div class="explorer-grid">
+        <section class="viewer-panel" aria-labelledby="anatomy-title">
+          <div class="panel-heading"><h2 id="anatomy-title">Brain anatomy</h2><div class="segments" id="viewer-mode" role="group" aria-label="Viewer mode"><button data-mode="3d" aria-pressed="true">3D reference</button><button data-mode="mri" aria-pressed="false">Case MRI</button></div></div>
+          <div id="model-pane" class="model-pane">
+            <div class="viewer-label">Textured anatomical model</div>
+            <model-viewer id="brain-model" src="assets/brain.glb" alt="Interactive textured brain reference model. Drag to orbit, scroll or pinch to zoom; arrow keys rotate after focus." camera-controls touch-action="pan-y" camera-orbit="35deg 75deg 105%" field-of-view="30deg" min-camera-orbit="auto 5deg 40%" max-camera-orbit="auto 175deg 200%" environment-image="neutral" exposure="1.1" shadow-intensity="0" interaction-prompt="none" loading="eager" reveal="auto"><div slot="progress-bar" class="model-progress"><span id="model-status" role="status">Loading 3D brain…</span><progress id="model-progress" max="1" value="0" aria-label="3D model loading progress"></progress></div></model-viewer>
+            <div id="model-error" class="model-error" hidden><p>The 3D model could not render in this browser.</p><button id="fallback-mri" class="button">View case MRI</button></div>
+            <div class="model-toolbar"><div class="segments" id="camera-views" role="group" aria-label="3D camera presets"><button data-orbit="35deg 75deg 105%" aria-pressed="true">Oblique</button><button data-orbit="90deg 90deg 105%" aria-pressed="false">Side</button><button data-orbit="0deg 5deg 105%" aria-pressed="false">Top</button></div><button id="rotate-model" class="button small" aria-pressed="false">Auto rotate</button><button id="reset-model" class="button small">Reset</button></div>
+            <p class="viewer-instruction">Drag to orbit · Scroll or pinch to zoom</p>
+          </div>
+          <div id="mri-pane" class="mri-pane" hidden>
+            <div class="mri-canvas"><img id="mri-image" alt="Selected case preprocessed T1-weighted MRI"><span class="orientation top" id="orientation-top">A</span><span class="orientation bottom" id="orientation-bottom">P</span><span class="orientation left" id="orientation-left">L</span><span class="orientation right" id="orientation-right">R</span></div>
+            <div class="mri-controls"><div class="segments" id="mri-views" role="group" aria-label="MRI orientation"><button data-view="axial" aria-pressed="true">Axial</button><button data-view="coronal" aria-pressed="false">Coronal</button><button data-view="sagittal" aria-pressed="false">Sagittal</button></div><div id="slice-controls"><label for="mri-slice">Axial slice <span id="slice-number">4 / 7</span></label><input id="mri-slice" type="range" min="0" max="6" value="3"><div class="slice-ends"><span>Inferior</span><span>Superior</span></div></div></div>
+          </div>
+          <p id="viewer-note" class="viewer-note">Shared anatomical reference · Not reconstructed from the selected case.</p>
+        </section>
+        <section class="prediction-panel" aria-labelledby="prediction-title"><div class="panel-heading"><h2 id="prediction-title">Model predictions</h2><span id="prediction-count" class="muted">5 models</span></div><p class="plot-description" id="prediction-description">Predicted age against the person’s true age.</p><div id="prediction-chart" aria-live="polite"><p>Loading predictions…</p></div></section>
+      </div>
+      <div class="evidence-strip"><div><h2 id="case-selection">Typical 20s</h2><p id="case-note"></p></div><div><h2>The clean comparison</h2><p>SALD is held out. BrainAgeNeXt’s mean absolute error is <strong id="sald-mae">3.39 years</strong> across 200 scans. <a href="#cohorts">See cohort results ↗</a></p></div></div>
+      <details class="methodology"><summary>How to read this study</summary><div><h3>Recorded predictions</h3><p>Values come from recorded project runs. Selecting a case replays those predictions; no model runs in your browser. The image demo includes 26 selected cases; the full CSV includes all 799 scan records.</p><h3>Frozen CNN features, ridge heads</h3><p>A ridge head is a small linear model using features from a frozen CNN. These heads were trained on IXI Guys+HH only. IXI predictions are out-of-fold; SALD was not used to train the heads.</p><h3>Training overlap</h3><p>BrainAgeNeXt’s training included IXI through openBHB and eNKI through NKI-RS. SALD is the independent comparison. Tabular models only appear for IXI, where tissue-volume features were extracted.</p><h3>The images and the 3D model</h3><p>Case MRI images are the research repository’s skull-stripped, bias-corrected MNI152-aligned slices in neurological view. The shared GLB is the supplied anatomical reference. Its geometry does not change with the case or the model’s predicted age.</p></div></details>
+    </section>
+    <section id="cohorts-view" class="view" hidden aria-labelledby="cohorts-title"><header class="page-heading"><div><h1 id="cohorts-title">Cohort results</h1><p>SALD is the independent test of generalisation.</p></div></header><div class="cohort-finding"><span>BrainAgeNeXt · SALD</span><p><strong id="cohort-lead">3.39</strong> years MAE</p><span>200 held-out scans · 95% bootstrap interval <span id="cohort-ci">3.03–3.76</span></span></div><section class="results-section"><h2>Published CNNs</h2><p>Mean absolute error in years. Lower is better; intervals are 95% bootstrap intervals.</p><div id="cohort-table" class="table-wrap"></div></section><section class="results-section"><h2>Frozen features and ridge heads</h2><p>IXI 5-fold results and SALD held-out results, with eNKI where recorded in the source.</p><div id="heads-table" class="table-wrap"></div></section><p class="muted">IXI and eNKI overlap BrainAgeNeXt training. SALD does not. Cohort results describe the full recorded evaluation, not the mean over the 18 selected demo cases.</p></section>
+    <section id="data-view" class="view" hidden aria-labelledby="data-title"><header class="page-heading"><div><h1 id="data-title">All case data</h1><p id="data-count">26 image cases with full-precision predictions</p></div></header><div class="data-actions"><a class="button primary" href="data/all_predictions.csv" download="iaudit-all-799-scans.csv">All 799 scans CSV ↓</a><button id="download-csv" class="button">Demo predictions CSV ↓</button><a class="button" href="data/cases.json" download="iaudit-full-data.json">Case JSON ↓</a><a class="button" href="data/metrics.json" download="iaudit-metrics.json">Study metrics JSON ↓</a></div><div id="all-data-table" class="table-wrap"></div><section class="results-section"><h2>What’s included</h2><p>The table shows all 26 image cases, including ages, sex, site and every available prediction. The 799-scan CSV includes the full cohort ages, recorded ethnicity where available, training overlap, model outputs and reliability values. Case JSON also includes selection notes, BrainAgeNeXt’s five internal predictions, 234 MRI image paths and cohort summaries. Empty CSV cells mean that model was not run on that scan. Original MRI volumes are not included.</p></section></section>
+    <footer class="page-footer"><span>Data: <a href="https://brain-development.org/ixi-dataset/">IXI (CC BY-SA 3.0)</a> · NKI-Rockland &amp; SALD via INDI · DeepBrainNet via ANTsPyNet · BrainAgeNeXt (La Rosa et al., 2025)</span><span>Built with <a href="https://www.tasteskill.dev/" target="_blank" rel="noreferrer">Taste Skill</a> · <a href="https://github.com/boss477/iaudit-brain-explorer" target="_blank" rel="noreferrer">GitHub</a></span></footer>
+    <noscript>This case explorer requires JavaScript. You can still <a href="data/cases.json">download all source data as JSON</a>.</noscript>
+  </main>
+</body>
+</html>
