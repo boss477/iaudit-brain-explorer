@@ -109,6 +109,7 @@ function route(){
   $('breadcrumb').textContent=`Research / ${{explorer:'Case explorer',cohorts:'Cohort results',data:'All case data'}[state.route]}`;
   if(state.route==='explorer')renderCase();else stopRotation();
   $('sidebar').classList.remove('menu-open');$('menu-toggle').setAttribute('aria-expanded','false');
+  window.scrollTo({top:0,behavior:'instant'});
 }
 
 function selectCase(id){
