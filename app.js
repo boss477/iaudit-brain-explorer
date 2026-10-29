@@ -60,9 +60,10 @@ function renderChart(){
   let lo=Math.floor((Math.min(...values)-3)/5)*5,hi=Math.ceil((Math.max(...values)+3)/5)*5;
   if(hi-lo<20){lo=Math.floor(((hi+lo)/2-10)/5)*5;hi=lo+20;}
   const pct=v=>(v-lo)/(hi-lo)*100;
+  const closest=names.reduce((best,name)=>Math.abs(c.preds[name]-c.age)<Math.abs(c.preds[best]-c.age)?name:best,names[0]);
   let html='';
   if(state.guesses.has(c.id)){const g=state.guesses.get(c.id);html+=`<p class="guess-result">Your estimate: ${f(g)} y · Error: ${signed(g-c.age)} y</p>`;}
-  html+=`<div class="chart-key"><span><i class="truth-key"></i>True age ${f(c.age)} y</span><span><i class="prediction-key"></i>Prediction</span></div>`;
+  html+=`<div class="chart-key"><span><i class="truth-key"></i>True age <strong>${f(c.age)} years</strong></span><span><i class="prediction-key"></i>Model prediction</span></div><div class="chart-column-labels"><span>Model</span><span>Age in years</span><span>Prediction / error</span></div>`;
   for(const [label,members] of groups){
     const rows=members.filter(n=>typeof c.preds[n]==='number');
     if(!rows.length)continue;
@@ -74,11 +75,12 @@ function renderChart(){
         const outputs=c.preds['BrainAgeNeXt models'];
         internal=`<i class="internal-range" style="--left:${pct(Math.min(...outputs))}%;--width:${pct(Math.max(...outputs))-pct(Math.min(...outputs))}%"></i>`+outputs.map(v=>`<i class="internal-tick" style="--left:${pct(v)}%"></i>`).join('');
       }
-      html+=`<div class="prediction-row" title="${escapeHTML(name)}: ${value} years; error ${error.toFixed(2)} years"><span class="model-name">${escapeHTML(name)}</span><div class="prediction-track" aria-hidden="true" style="--truth:${pct(c.age)}%;--value:${pct(value)}%"><i class="track-line"></i>${internal}<i class="truth-mark"></i><i class="prediction-dot"></i></div><span class="prediction-value">${f(value)}<small>${signed(error)} y</small></span></div>`;
+      html+=`<div class="prediction-row${name===closest?' closest-row':''}" title="${escapeHTML(name)}: ${value} years; error ${error.toFixed(2)} years"><span class="model-name">${escapeHTML(name)}${name===closest?'<span class="closest-label">Closest to true age</span>':''}</span><div class="prediction-track" aria-hidden="true" style="--truth:${pct(c.age)}%;--value:${pct(value)}%"><i class="track-line"></i><i class="error-span" style="left:${pct(Math.min(c.age,value))}%;width:${Math.abs(pct(value)-pct(c.age))}%"></i>${internal}<i class="truth-mark"></i><i class="prediction-dot"></i></div><span class="prediction-value">${f(value)}<small>${signed(error)} y</small></span></div>`;
     }
     html+='</div>';
   }
-  const ticks=[];for(let t=Math.ceil(lo/10)*10;t<=hi;t+=10)ticks.push(`<span style="left:${pct(t)}%">${t}</span>`);
+  const step=hi-lo<=35?5:10;
+  const ticks=[];for(let t=Math.ceil(lo/step)*step;t<=hi;t+=step)ticks.push(`<span style="left:${pct(t)}%">${t}</span>`);
   html+=`<div class="chart-axis" aria-label="Age scale from ${lo} to ${hi} years"><div></div><div>${ticks.join('')}</div><div></div></div><p class="chart-footnote">Age in years. Error = prediction − true age.</p><details class="model-internals"><summary>BrainAgeNeXt’s five internal predictions</summary><p>${c.preds['BrainAgeNeXt models'].map(v=>`${f(v,2)} y`).join(' · ')}. Grey ticks show these outputs.</p></details>`;
   if(c.cohort==='SALD')html+='<p class="chart-footnote">Tabular models are unavailable for SALD; tissue-volume features were only extracted for IXI.</p>';
   $('prediction-chart').innerHTML=html;
@@ -145,6 +147,10 @@ function downloadCSV(){
 }
 
 const brain=$('brain-model');
+const expandChart=document.createElement('button');
+expandChart.type='button';expandChart.className='button chart-expand';expandChart.textContent='Expand chart';expandChart.setAttribute('aria-expanded','false');expandChart.setAttribute('aria-controls','prediction-chart');
+$('prediction-title').parentElement.append(expandChart);
+expandChart.addEventListener('click',()=>{const expanded=document.querySelector('.explorer-grid').classList.toggle('chart-expanded');expandChart.textContent=expanded?'Split view':'Expand chart';expandChart.setAttribute('aria-expanded',String(expanded));if(expanded)stopRotation();});
 function stopRotation(){brain.removeAttribute('auto-rotate');$('rotate-model').setAttribute('aria-pressed','false');$('rotate-model').textContent='Auto rotate';}
 brain.addEventListener('progress',e=>{$('model-progress').value=e.detail.totalProgress;$('model-status').textContent=`Loading 3D brain… ${Math.round(e.detail.totalProgress*100)}%`;brain.querySelector('.model-progress').hidden=e.detail.totalProgress>=1;});
 brain.addEventListener('load',()=>{$('model-error').hidden=true;brain.querySelector('.model-progress').hidden=true;$('model-status').textContent='3D brain loaded';});

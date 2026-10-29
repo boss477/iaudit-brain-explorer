@@ -17,3 +17,49 @@ main{margin-left:240px;padding:0 32px;max-width:1900px}.app-header{height:76px;d
 .case-row[aria-pressed=true] .case-demographics,.case-row[aria-pressed=true] .case-why{color:#c8cbd0}
 .model-toolbar .segments button[aria-pressed=true]{color:#fff}
 
+
+/* Prediction workspace: larger type, more plot area and a full-width reading mode. */
+@media(min-width:1101px){.explorer-grid{grid-template-columns:minmax(280px,.7fr) minmax(0,1.3fr)}}
+.prediction-panel .panel-heading{padding:22px 24px 0;flex-wrap:wrap;gap:10px}
+.prediction-panel .panel-heading h2{font-size:20px;margin-right:auto}
+#prediction-count{font-size:13px}
+.chart-expand{min-height:34px;padding:7px 10px;font-size:12px}
+.prediction-panel .plot-description{padding:12px 24px 0;font-size:14px}
+#prediction-chart{padding:22px 24px 24px}
+.chart-key{font-size:13px;gap:24px;margin-bottom:22px}
+.chart-key strong{font-weight:500;color:var(--text)}
+.truth-key{height:15px;vertical-align:-3px}
+.prediction-key{height:9px;width:9px;vertical-align:0}
+.prediction-row,.chart-axis,.chart-column-labels{grid-template-columns:minmax(130px,1.05fr) minmax(85px,1fr) 78px;gap:18px}
+.chart-column-labels{display:grid;font-size:11px;color:var(--muted);padding-bottom:10px}
+.chart-column-labels>span:last-child{text-align:right}
+.chart-group{margin-top:24px}
+.chart-group h3{font-size:12px;font-weight:500;color:var(--muted);margin-bottom:8px}
+.prediction-row{min-height:76px;border-bottom:1px solid #f0f2f5}
+.model-name{font-size:14px;line-height:1.45}
+.prediction-value{font-size:23px;font-weight:500;letter-spacing:-.035em}
+.prediction-value small{font-size:13px;font-weight:400;letter-spacing:0;margin-top:5px}
+.prediction-track{height:38px}
+.truth-mark{width:2px}
+.track-line{background:#e3e7ed}
+.error-span{position:absolute;top:calc(50% - 2px);height:4px;background:#c4d7f2}
+.prediction-dot{width:11px;height:11px;background:var(--blue);outline:3px solid #fff}
+.internal-range{top:17px}
+.internal-tick{top:11px;height:16px}
+.closest-label{display:block;font-size:11px;color:var(--blue);margin-top:5px}
+.chart-axis{margin-top:18px}
+.chart-axis span{font-size:12px}
+.chart-footnote,.model-internals{font-size:12px;margin-top:16px;line-height:1.65}
+.model-internals summary{min-height:28px}
+.explorer-grid.chart-expanded{grid-template-columns:minmax(0,1fr)}
+.chart-expanded .viewer-panel{display:none}
+.chart-expanded .prediction-row,.chart-expanded .chart-axis,.chart-expanded .chart-column-labels{grid-template-columns:minmax(190px,.65fr) minmax(250px,1.7fr) 95px;gap:28px}
+.chart-expanded .prediction-row{min-height:86px}
+.chart-expanded .model-name{font-size:16px}
+.chart-expanded .prediction-value{font-size:26px}
+.chart-expanded .prediction-panel{max-width:1400px;width:100%}
+@media(max-width:1100px){.explorer-grid{grid-template-columns:1fr}.prediction-row,.chart-axis,.chart-column-labels{grid-template-columns:minmax(160px,1fr) minmax(140px,1.4fr) 80px}.chart-expanded .prediction-row,.chart-expanded .chart-axis,.chart-expanded .chart-column-labels{grid-template-columns:minmax(160px,1fr) minmax(140px,1.4fr) 80px;gap:18px}.model-pane{min-height:400px}model-viewer{height:330px;flex:none}}
+@media(max-width:700px){.prediction-panel .panel-heading{padding:18px 16px 0}.prediction-panel .panel-heading h2{font-size:19px}.prediction-panel .plot-description{padding:12px 16px 0;font-size:13px}#prediction-chart{padding:20px 16px}.prediction-row,.chart-axis,.chart-column-labels,.chart-expanded .prediction-row,.chart-expanded .chart-axis,.chart-expanded .chart-column-labels{grid-template-columns:minmax(102px,1.15fr) minmax(56px,1fr) 59px;gap:10px}.model-name,.chart-expanded .model-name{font-size:13px}.prediction-value,.chart-expanded .prediction-value{font-size:21px}.prediction-value small{font-size:12px}.prediction-row,.chart-expanded .prediction-row{min-height:82px}.chart-key{gap:16px;font-size:12px}.chart-column-labels{font-size:11px}.chart-column-labels>span:last-child{font-size:0}.chart-column-labels>span:last-child:after{content:'Age / error';font-size:11px}.chart-expand{min-height:36px}.chart-axis span{font-size:11px}.closest-label{font-size:11px}.prediction-panel .panel-heading #prediction-count{margin-left:auto}.prediction-panel .panel-heading h2{margin-right:0}}
+
+@media(min-width:1101px){.viewer-panel{align-self:start;position:sticky;top:20px}.viewer-panel .model-pane{min-height:405px}.viewer-panel model-viewer{height:330px;flex:none}}
+
